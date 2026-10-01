@@ -11,7 +11,7 @@
   Va después de que la persona agenda su llamada. No antes.
 
   Qué hace y qué NO hace:
-    - Solo dos bloques: videos y testimonios. Instrucción del fundador.
+    - Un solo bloque de contenido: tres videos. Instrucción del fundador.
     - No vende nada y no hay precio. El precio vive en la llamada.
     - noindex: es una página de embudo, no debe aparecer en búsquedas.
 
@@ -28,10 +28,19 @@
      son de Loom y van con loading=lazy salvo el primero: cuatro
      embeds sin lazy cargan medio megabyte antes de pintar nada.
 
-  2026-10-01: las FAQ de texto se reemplazaron por cuatro videos de
-     Loom. El de experiencia es VERTICAL (9:16) y los otros tres son
-     16:9, por eso hay dos clases de ancho tope: .wide y .tall. En una
-     sola columna sin eso, el vertical se come la pantalla en desktop.
+  2026-10-01: las FAQ de texto se reemplazaron por videos de Loom. El
+     de experiencia es VERTICAL (9:16) y los otros 16:9, por eso hay dos
+     clases de ancho tope: .wide y .tall. Sin eso, el vertical se come
+     la pantalla en desktop.
+
+  2026-10-01, segunda ronda:
+     - Fuera el video del precio y fuera la sección de testimonios.
+     - Fuera todo el copy sobre reagendar. El bloque de WhatsApp ya no
+       sirve para mover la llamada: ahora su trabajo es que GUARDEN el
+       número antes de que les marque, para que no entre como
+       desconocido. Eso es lo que de verdad baja el no-show.
+     - El número va ARRIBA del botón y en ámbar, porque el dato que
+       tienen que retener es el número, no el clic.
 
   !! PENDIENTE: los tres testimonios son descripciones escritas por
      nosotros a partir de la entrevista, NO citas de Franco, Kevin ni
@@ -85,6 +94,10 @@ h1{margin:16px 0 0;font-size:clamp(27px,4.6vw,44px);text-wrap:balance}
 .wa{margin:clamp(26px,4vw,34px) auto 0;max-width:580px;padding:clamp(18px,3vw,24px);
   border-radius:18px;background:var(--panel);border:1px solid var(--line-blue);text-align:left}
 .wa p{font-size:clamp(14.5px,2.2vw,16px);color:var(--text-2)}
+.wa p+p{margin-top:10px}
+.wa .num{font-family:"Plus Jakarta Sans";font-weight:800;letter-spacing:-.01em;
+  font-size:clamp(21px,3.4vw,28px);color:var(--amber-soft);text-align:center;
+  margin-bottom:14px}
 .wa p b{color:var(--text)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
   margin-top:14px;min-height:50px;width:100%;padding:14px 26px;border-radius:999px;
@@ -115,21 +128,6 @@ h1{margin:16px 0 0;font-size:clamp(27px,4.6vw,44px);text-wrap:balance}
 .vid.tall .frame{padding-bottom:177.78%}
 .frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 
-/* ── testimonios ── */
-.cards{margin-top:clamp(24px,4vw,38px);display:grid;gap:16px}
-@media(min-width:760px){.cards{grid-template-columns:repeat(3,1fr)}}
-.card{padding:clamp(20px,3vw,26px);border-radius:18px;background:var(--panel);
-  border:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
-.card .ph{aspect-ratio:1;width:56px;border-radius:999px;background:rgba(77,141,255,.12);
-  border:1px solid var(--line-blue);display:flex;align-items:center;justify-content:center;
-  font-family:"Plus Jakarta Sans";font-weight:800;font-size:20px;color:var(--blue)}
-.card h3{font-size:clamp(17px,2.5vw,19px)}
-.card p{font-size:clamp(14px,2.2vw,15.5px);color:var(--text-2);line-height:1.66}
-.card .fig{font-family:"Plus Jakarta Sans";font-weight:800;
-  font-size:clamp(17px,2.6vw,20px);color:var(--amber-soft);margin-top:auto}
-.note{margin-top:22px;text-align:center;font-size:13px;color:var(--text-3);
-  font-style:italic;line-height:1.6}
-
 footer{border-top:1px solid var(--line);padding:clamp(30px,5vw,44px) 0}
 .disc{font-size:12px;color:var(--text-3);line-height:1.7;max-width:78ch;margin:0 auto;text-align:center}
 .disc a{color:var(--text-3)}
@@ -147,8 +145,10 @@ footer{border-top:1px solid var(--line);padding:clamp(30px,5vw,44px) 0}
       <p class="lede">Te acaba de llegar la invitación por correo con el día y la hora. <b>Agéndala en tu calendario ahora</b>, mientras lo tienes enfrente.</p>
 
       <div class="wa">
-        <p><b>Una cosa más.</b> Si algo cambia y necesitas mover la llamada, escríbenos por WhatsApp. Mover una llamada no es problema; no llegar y no avisar sí, porque ese lugar se lo quitamos a alguien más.</p>
-        <a class="btn" href="{{WHATSAPP_URL}}">Escribirnos por WhatsApp</a>
+        <p class="num">+52 311 244 9539</p>
+        <p>De este número te vamos a escribir y marcar. <b>Guárdalo ahora</b> para que no te entre como desconocido y se te pase.</p>
+        <p>Y si quieres adelantarte y escribirnos tú, aquí está.</p>
+        <a class="btn" href="https://wa.me/523112449539">Escribir por WhatsApp</a>
       </div>
     </div>
   </section>
@@ -171,43 +171,7 @@ footer{border-top:1px solid var(--line);padding:clamp(30px,5vw,44px) 0}
           <h3>QUÉ RESULTADOS PUEDO OBTENER</h3>
           <div class="frame"><iframe src="https://www.loom.com/embed/88ae653c1b394590b2a3a572db6a7462" title="QUÉ RESULTADOS PUEDO OBTENER" loading="lazy" allowfullscreen allow="fullscreen; picture-in-picture"></iframe></div>
         </div>
-
-        <div class="vid wide">
-          <h3>¿CUÁNTO CUESTA?</h3>
-          <div class="frame"><iframe src="https://www.loom.com/embed/8bed5b3c2e744f898ef4f21864fcb3ea" title="¿CUÁNTO CUESTA?" loading="lazy" allowfullscreen allow="fullscreen; picture-in-picture"></iframe></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec">
-    <div class="wrap">
-      <h2>Tres que empezaron <em>exactamente donde tú</em></h2>
-      <div class="cards">
-
-        <div class="card">
-          <div class="ph">F</div>
-          <h3>Franco</h3>
-          <p>Odiaba su trabajo en American Express. No venía de marketing, no tenía audiencia y no había vendido nada por internet. Hoy asesora tiendas con su propia marca y ya no depende de sus papás.</p>
-          <div class="fig">+$5,000 al mes</div>
-        </div>
-
-        <div class="card">
-          <div class="ph">K</div>
-          <h3>Kevin</h3>
-          <p>Llevaba años viendo el contenido de Memo antes de tomar acción. Hoy tiene su propia marca de marketing y ayuda a tiendas en línea.</p>
-          <div class="fig">+$10,000 al mes</div>
-        </div>
-
-        <div class="card">
-          <div class="ph">E</div>
-          <h3>Eduardo</h3>
-          <p>Llegó sin conocimiento y sin experiencia de nada. Hoy es uno de los mejores consultores de la empresa y tiene su propia tienda en línea.</p>
-          <div class="fig">$10,000 al mes</div>
-        </div>
-
-      </div>
-      <p class="note">Cada tienda paga entre mil y tres mil dólares al mes. Ellos atienden varias. Ahí está la diferencia.</p>
+</div>
     </div>
   </section>
 
