@@ -21,6 +21,14 @@
        falta. Eso convierte el contacto por WhatsApp de opcional a
        requisito, que es lo que de verdad baja el no-show.
 
+  2026-10-01, cuarta ronda — VELOCIDAD:
+     Los videos tardaban porque el embed de Loom referencia ~663 scripts
+     y no trae etiqueta <video>: el reproductor lo monta JS. Tres iframes
+     = tres aplicaciones cargando antes de que la pagina pinte.
+     Ahora carga la MINIATURA (via oEmbed de Loom) y el iframe se crea al
+     hacer clic. El contenedor es un <a> al video en Loom, asi que si el
+     script falla el clic abre Loom y la pagina sigue entera.
+
   Qué hace y qué NO hace:
     - Un solo bloque de contenido: tres videos. Instrucción del fundador.
     - No vende nada y no hay precio. El precio vive en la llamada.
@@ -143,7 +151,21 @@ h1{margin:20px 0 0;font-size:clamp(27px,4.6vw,44px);text-wrap:balance}
 /* 4:3 — dimensiones confirmadas con el oEmbed de Loom, no con el
    codigo que da el boton de compartir, que venia equivocado */
 .frame{padding-bottom:75%}
+.frame{display:block;cursor:pointer;text-decoration:none}
 .frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.frame img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;
+  transition:transform .4s cubic-bezier(.22,1,.36,1),opacity .3s}
+.frame:hover img{transform:scale(1.03);opacity:.82}
+.play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:66px;height:66px;border-radius:999px;background:rgba(7,10,18,.72);
+  border:1px solid var(--line-blue);transition:transform .25s cubic-bezier(.22,1,.36,1),background .25s}
+.play::after{content:'';position:absolute;top:50%;left:54%;transform:translate(-50%,-50%);
+  border-style:solid;border-width:11px 0 11px 18px;
+  border-color:transparent transparent transparent var(--blue)}
+.frame:hover .play{transform:translate(-50%,-50%) scale(1.09);background:rgba(7,10,18,.88)}
+.dur{position:absolute;right:11px;bottom:11px;padding:3px 9px;border-radius:7px;
+  background:rgba(7,10,18,.82);font-size:12.5px;font-weight:600;color:var(--text-2);
+  font-variant-numeric:tabular-nums}
 
 footer{border-top:1px solid var(--line);padding:clamp(30px,5vw,44px) 0}
 .disc{font-size:12px;color:var(--text-3);line-height:1.7;max-width:78ch;margin:0 auto;text-align:center}
@@ -175,17 +197,30 @@ footer{border-top:1px solid var(--line);padding:clamp(30px,5vw,44px) 0}
       <div class="vids">
         <div class="vid">
           <h3>CÓMO FUNCIONA EL PROGRAMA</h3>
-          <div class="frame"><iframe src="https://www.loom.com/embed/9c529524b02e4151a705b3d88da3d158" title="CÓMO FUNCIONA EL PROGRAMA" allowfullscreen allow="fullscreen; picture-in-picture"></iframe></div>
+          <a class="frame" href="https://www.loom.com/share/9c529524b02e4151a705b3d88da3d158" data-v="9c529524b02e4151a705b3d88da3d158" target="_blank" rel="noopener" aria-label="Reproducir: CÓMO FUNCIONA EL PROGRAMA">
+            <img src="https://cdn.loom.com/sessions/thumbnails/9c529524b02e4151a705b3d88da3d158-82fb5fdb459d173f-full.jpg" alt="" decoding="async">
+            <span class="play" aria-hidden="true"></span>
+            <span class="dur">4:42</span>
+          </a>
         </div>
 
         <div class="vid">
           <h3>¿NECESITO EXPERIENCIA?</h3>
-          <div class="frame"><iframe src="https://www.loom.com/embed/37ad304219fb4fe6b18f7dc13eb36c8f" title="¿NECESITO EXPERIENCIA?" loading="lazy" allowfullscreen allow="fullscreen; picture-in-picture"></iframe></div>
+          <a class="frame" href="https://www.loom.com/share/37ad304219fb4fe6b18f7dc13eb36c8f" data-v="37ad304219fb4fe6b18f7dc13eb36c8f" target="_blank" rel="noopener" aria-label="Reproducir: ¿NECESITO EXPERIENCIA?">
+            <img src="https://cdn.loom.com/sessions/thumbnails/37ad304219fb4fe6b18f7dc13eb36c8f-7c2eb8b29e50c266-full.jpg" alt="" loading="lazy" decoding="async">
+            <span class="play" aria-hidden="true"></span>
+            <span class="dur">1:26</span>
+          </a>
         </div>
 
         <div class="vid">
           <h3>QUÉ RESULTADOS PUEDO OBTENER</h3>
-          <div class="frame"><iframe src="https://www.loom.com/embed/88ae653c1b394590b2a3a572db6a7462" title="QUÉ RESULTADOS PUEDO OBTENER" loading="lazy" allowfullscreen allow="fullscreen; picture-in-picture"></iframe></div>
+          <a class="frame" href="https://www.loom.com/share/88ae653c1b394590b2a3a572db6a7462" data-v="88ae653c1b394590b2a3a572db6a7462" target="_blank" rel="noopener" aria-label="Reproducir: QUÉ RESULTADOS PUEDO OBTENER">
+            <img src="https://cdn.loom.com/sessions/thumbnails/88ae653c1b394590b2a3a572db6a7462-e00cda092dfef5b7-full.jpg" alt="" loading="lazy" decoding="async">
+            <span class="play" aria-hidden="true"></span>
+            <span class="dur">1:45</span>
+          </a>
+        </div>
         </div>
 </div>
     </div>
@@ -198,5 +233,31 @@ footer{border-top:1px solid var(--line);padding:clamp(30px,5vw,44px) 0}
   </footer>
 
 </main>
+
+<script>
+/* Fachada de video. El embed de Loom referencia ~663 scripts y monta el
+   reproductor con JS, asi que tres iframes de golpe bloquean la pagina.
+   Aqui solo carga la miniatura; el iframe se crea al hacer clic.
+
+   Mejora progresiva de verdad: el contenedor YA ES un <a> al video en
+   Loom. Si este script no corre, el clic abre Loom en otra pestana y la
+   pagina sigue entera. Nada depende de que esto funcione. */
+(function () {
+  try {
+    document.querySelectorAll('.frame[data-v]').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        var f = document.createElement('iframe');
+        f.src = 'https://www.loom.com/embed/' + el.dataset.v + '?autoplay=1';
+        f.title = el.getAttribute('aria-label') || '';
+        f.allow = 'autoplay; fullscreen; picture-in-picture';
+        f.setAttribute('allowfullscreen', '');
+        el.innerHTML = '';
+        el.appendChild(f);
+      });
+    });
+  } catch (err) {}
+})();
+</script>
 </body>
 </html>
