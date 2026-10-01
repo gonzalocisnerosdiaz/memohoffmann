@@ -10,6 +10,17 @@
   CONFIRMACIÓN POST-AGENDA · MEMO HOFFMANN
   Va después de que la persona agenda su llamada. No antes.
 
+  2026-10-01, tercera ronda:
+     - Los TRES videos son 4:3, no 16:9 ni 9:16. Confirmado contra el
+       oEmbed de Loom (1920x1440 y 2560x1920). El codigo que da el boton
+       de compartir de Loom traia la proporcion equivocada en los tres.
+       Si se agrega otro video, consultar el oEmbed antes de pegarlo.
+     - El encabezado dejo de decir "confirmada" y ahora dice que falta
+       un paso, con barra al 90%. La llamada se confirma contestando el
+       WhatsApp, asi que la pagina ya no celebra: pide la accion que
+       falta. Eso convierte el contacto por WhatsApp de opcional a
+       requisito, que es lo que de verdad baja el no-show.
+
   Qué hace y qué NO hace:
     - Un solo bloque de contenido: tres videos. Instrucción del fundador.
     - No vende nada y no hay precio. El precio vive en la llamada.
@@ -81,14 +92,18 @@ main{position:relative;z-index:1}
 
 /* ── encabezado de confirmación ── */
 .top{padding:clamp(44px,8vw,86px) 0 clamp(30px,5vw,54px);text-align:center}
-.tick{width:66px;height:66px;margin:0 auto clamp(20px,3vw,26px);border-radius:999px;
-  display:flex;align-items:center;justify-content:center;font-size:30px;
-  background:rgba(77,141,255,.12);border:1px solid var(--line-blue);color:var(--blue)}
+.bar{width:min(320px,80%);height:9px;margin:18px auto 0;border-radius:99px;
+  background:rgba(255,255,255,.08);overflow:hidden}
+.bar i{display:block;height:100%;width:90%;border-radius:99px;
+  background:linear-gradient(90deg,var(--blue),var(--amber));
+  animation:fill 1.1s cubic-bezier(.22,1,.36,1) both}
+@keyframes fill{from{width:0}to{width:90%}}
+@media (prefers-reduced-motion:reduce){.bar i{animation:none}}
 .eyebrow{display:inline-block;padding:8px 16px;border-radius:999px;
   background:rgba(77,141,255,.10);border:1px solid var(--line-blue);
   color:var(--blue-soft);font-size:clamp(11px,2.2vw,12.5px);font-weight:600;
   text-transform:uppercase;letter-spacing:.09em}
-h1{margin:16px 0 0;font-size:clamp(27px,4.6vw,44px);text-wrap:balance}
+h1{margin:20px 0 0;font-size:clamp(27px,4.6vw,44px);text-wrap:balance}
 .lede{margin:16px auto 0;max-width:62ch;font-size:clamp(15.5px,2.3vw,18px);
   color:var(--text-2);line-height:1.68}
 .lede b{color:var(--text)}
@@ -119,16 +134,15 @@ h1{margin:16px 0 0;font-size:clamp(27px,4.6vw,44px);text-wrap:balance}
 /* ── videos: Loom, lazy, con ancho tope por formato ── */
 .vids{margin-top:clamp(26px,4vw,40px);display:flex;flex-direction:column;
   gap:clamp(30px,5vw,48px)}
-.vid{width:100%;margin:0 auto}
-.vid.wide{max-width:760px}
-.vid.tall{max-width:360px}
+.vid{width:100%;max-width:720px;margin:0 auto}
 .vid h3{font-size:clamp(15px,2.3vw,18px);text-align:center;margin-bottom:14px;
   color:var(--blue-soft);text-transform:uppercase;letter-spacing:.07em;
   font-weight:700;line-height:1.35}
 .frame{position:relative;height:0;border-radius:16px;overflow:hidden;
   background:var(--panel);border:1px solid var(--line-blue)}
-.vid.wide .frame{padding-bottom:56.25%}
-.vid.tall .frame{padding-bottom:177.78%}
+/* 4:3 — dimensiones confirmadas con el oEmbed de Loom, no con el
+   codigo que da el boton de compartir, que venia equivocado */
+.frame{padding-bottom:75%}
 .frame iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
 
 footer{border-top:1px solid var(--line);padding:clamp(30px,5vw,44px) 0}
@@ -141,15 +155,15 @@ footer{border-top:1px solid var(--line);padding:clamp(30px,5vw,44px) 0}
 
   <section class="top">
     <div class="wrap">
-      <div class="tick">&#10003;</div>
-      <span class="eyebrow">Tu llamada está confirmada</span>
-      <h1>Listo. Ya tienes tu lugar apartado.</h1>
-      <p class="lede">Te acaba de llegar la invitación por correo con el día y la hora. <b>Agéndala en tu calendario ahora</b>, mientras lo tienes enfrente.</p>
+      <span class="eyebrow">Último paso &middot; 90%</span>
+      <div class="bar"><i></i></div>
+      <h1>Espera. Falta un paso para confirmar tu llamada.</h1>
+      <p class="lede">Tu horario ya está apartado, pero <b>la llamada se confirma por WhatsApp</b>. En los próximos minutos te va a llegar un mensaje desde este número.</p>
 
       <div class="wa">
         <p class="num">+52 311 244 9539</p>
-        <p>De este número te vamos a escribir y marcar. <b>Guárdalo ahora</b> para que no te entre como desconocido y se te pase.</p>
-        <p>Y si quieres adelantarte y escribirnos tú, aquí está.</p>
+        <p><b>Guárdalo ahora</b> para que no te entre como desconocido y se te pase. Cuando llegue el mensaje, contéstalo y con eso queda confirmada.</p>
+        <p>Si prefieres adelantarte, escríbenos tú desde aquí.</p>
         <a class="btn" href="https://wa.me/523112449539">Escribir por WhatsApp</a>
       </div>
     </div>
@@ -159,17 +173,17 @@ footer{border-top:1px solid var(--line);padding:clamp(30px,5vw,44px) 0}
     <div class="wrap">
       <h2>Lo que más <em>me preguntan</em></h2>
       <div class="vids">
-        <div class="vid wide">
+        <div class="vid">
           <h3>CÓMO FUNCIONA EL PROGRAMA</h3>
           <div class="frame"><iframe src="https://www.loom.com/embed/9c529524b02e4151a705b3d88da3d158" title="CÓMO FUNCIONA EL PROGRAMA" allowfullscreen allow="fullscreen; picture-in-picture"></iframe></div>
         </div>
 
-        <div class="vid tall">
+        <div class="vid">
           <h3>¿NECESITO EXPERIENCIA?</h3>
           <div class="frame"><iframe src="https://www.loom.com/embed/37ad304219fb4fe6b18f7dc13eb36c8f" title="¿NECESITO EXPERIENCIA?" loading="lazy" allowfullscreen allow="fullscreen; picture-in-picture"></iframe></div>
         </div>
 
-        <div class="vid wide">
+        <div class="vid">
           <h3>QUÉ RESULTADOS PUEDO OBTENER</h3>
           <div class="frame"><iframe src="https://www.loom.com/embed/88ae653c1b394590b2a3a572db6a7462" title="QUÉ RESULTADOS PUEDO OBTENER" loading="lazy" allowfullscreen allow="fullscreen; picture-in-picture"></iframe></div>
         </div>
