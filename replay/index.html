@@ -8,7 +8,7 @@
 <!--
 ====================================================================
   PÁGINA DE REPETICIÓN · MEMO HOFFMANN
-  Clase del 1 de octubre de 2026. La repetición vive 48 horas.
+  Clase del 1 de octubre de 2026. Cierra el domingo 4 a las 6 PM CDMX.
 
   TRES PIEZAS:
    1. Cuenta regresiva a la expiración. Al llegar a cero el video
@@ -17,8 +17,13 @@
       compartir de Vimeo venia con padding 75% (4:3). El oEmbed
       confirma 1280x720, o sea 56.25%. Mismo error que traian los
       tres embeds de Loom. Verificar SIEMPRE contra el oEmbed.
-   3. El CTA se abre al 60% de la clase vista, que es justo donde
-      arranca la parte de como entrar.
+   3. El CTA se abre al 60% REPRODUCIDO, que es justo donde arranca
+      la parte de como entrar.
+      ANTI-ADELANTO: no se mira donde esta la cabeza del video, se
+      suma cuanto avanzo entre tick y tick. Un tick normal avanza
+      menos de 2 segundos; arrastrar la barra avanza minutos de golpe
+      y eso no se acredita. El avance se guarda en localStorage para
+      que se pueda ver en dos sentadas.
 
   !! LA EXPIRACION ES DE RELOJ DEL NAVEGADOR, NO ES UN CANDADO.
      Quien cambie la hora de su maquina ve el video igual. Sirve
@@ -140,7 +145,7 @@ footer{border-top:1px solid var(--line);padding:clamp(26px,4.5vw,40px) 0}
   <section id="vivo">
     <div class="wrap">
       <div class="top">
-        <span class="eyebrow">Repetición &middot; 48 horas</span>
+        <span class="eyebrow">Repetición &middot; se cierra el domingo</span>
         <h1>La clase completa de Performance Marketing</h1>
         <p class="lede">La misma que dimos en vivo el 1 de octubre, sin cortes. Dura cerca de dos horas.</p>
       </div>
@@ -159,8 +164,9 @@ footer{border-top:1px solid var(--line);padding:clamp(26px,4.5vw,40px) 0}
         <div id="cerrado">
           <h2>El siguiente paso <em>aparece más adelante</em></h2>
           <p>En la clase explico cómo se entra y a quién aceptamos. El link se abre solo cuando llegas a esa parte.</p>
+          <p class="small">Adelantar el video no cuenta. Se cuenta lo que de verdad reproduces, y puedes verla en dos ratos sin perder lo avanzado.</p>
           <div class="prog"><i id="fill"></i></div>
-          <p class="pct" id="pct">Llevas 0% de la clase</p>
+          <p class="pct" id="pct">Has visto 0% de la clase</p>
         </div>
 
         <div id="abierto" hidden>
@@ -176,7 +182,7 @@ footer{border-top:1px solid var(--line);padding:clamp(26px,4.5vw,40px) 0}
   <section class="gone" id="expirada" hidden>
     <div class="wrap">
       <h2>La repetición ya se cerró</h2>
-      <p>Estuvo arriba 48 horas, como dijimos que iba a estar. Si alcanzaste a verla y quieres que veamos tu caso, la aplicación sigue abierta.</p>
+      <p>Estuvo arriba hasta el domingo, como dijimos que iba a estar. Si alcanzaste a verla y quieres que veamos tu caso, la aplicación sigue abierta.</p>
       <a class="btn" href="https://api.leadconnectorhq.com/widget/bookings/aplicacion-pm">Llenar mi aplicación</a>
     </div>
   </section>
@@ -192,69 +198,100 @@ footer{border-top:1px solid var(--line);padding:clamp(26px,4.5vw,40px) 0}
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script>
 /* ──────────────────────────────────────────────────────────────
-   Dos cosas, las dos envueltas en try/catch: si cualquiera truena,
-   la pagina queda con el video visible y el CTA visible. Nunca en
-   blanco.
+   Todo envuelto en try/catch: si algo truena, queda el video
+   visible y el CTA visible. Nunca en blanco.
    ────────────────────────────────────────────────────────────── */
 (function () {
   'use strict';
 
-  /* El evento fue el 1 de octubre 2026, 7 PM CDMX. CDMX es UTC-6 todo
-     el año: Mexico no aplica horario de verano desde 2022. 48 horas. */
-  var CIERRA   = new Date('2026-10-03T19:00:00-06:00').getTime();
-  var UMBRAL   = 0.60;              /* el CTA se abre al 60% de la clase */
-  var MEMORIA  = 'memo_replay_ok';  /* para que recargar no castigue */
+  /* Cierra el domingo 4 de octubre, 6 PM CDMX. Mexico es UTC-6 todo el
+     año: no aplica horario de verano desde 2022. NO cambiar a -05:00. */
+  var CIERRA  = new Date('2026-10-04T18:00:00-06:00').getTime();
+  var UMBRAL  = 0.60;             /* fraccion de la clase que hay que ver */
+  var SALTO   = 2;                /* segundos: mas que esto es un salto, no reproduccion */
+  var K_VISTO = 'memo_replay_visto';
+  var K_OK    = 'memo_replay_ok';
 
   var $ = function (id) { return document.getElementById(id); };
+  var leer = function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  var guardar = function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} };
 
-  /* ── 1. Cuenta regresiva y expiración ── */
+  /* ── 1. Cuenta regresiva y expiracion ── */
   function reloj() {
     try {
       var falta = CIERRA - Date.now();
       if (falta <= 0) {
-        if ($('vivo'))    $('vivo').hidden = true;
-        if ($('barra'))   $('barra').hidden = true;
+        if ($('vivo'))     $('vivo').hidden = true;
+        if ($('barra'))    $('barra').hidden = true;
         if ($('expirada')) $('expirada').hidden = false;
         return false;
       }
       var h = Math.floor(falta / 36e5),
           m = Math.floor(falta % 36e5 / 6e4),
-          s = Math.floor(falta % 6e4 / 1e3);
-      var dd = function (n) { return n < 10 ? '0' + n : '' + n; };
+          g = Math.floor(falta % 6e4 / 1e3),
+          dd = function (n) { return n < 10 ? '0' + n : '' + n; };
       if ($('h')) $('h').textContent = dd(h);
       if ($('m')) $('m').textContent = dd(m);
-      if ($('s')) $('s').textContent = dd(s);
+      if ($('s')) $('s').textContent = dd(g);
       return true;
     } catch (e) { return false; }
   }
   if (reloj()) { setInterval(reloj, 1000); }
 
-  /* ── 2. Desbloqueo por avance del video ── */
+  /* ── 2. Desbloqueo por tiempo REALMENTE reproducido ──────────────
+     Aqui esta el anti-adelanto. En lugar de preguntar donde esta la
+     cabeza del video, se suma cuanto avanzo entre un tick y el
+     siguiente. Un tick normal avanza menos de 2 segundos; arrastrar
+     la barra avanza minutos de golpe y eso NO se suma.
+     Resultado: para abrir el CTA hay que reproducir de verdad el 60%
+     de la clase. El progreso se guarda, asi que se puede ver en dos
+     sentadas sin perder lo avanzado. */
   function abrir() {
     try {
       if ($('cerrado')) $('cerrado').hidden = true;
       if ($('abierto')) $('abierto').hidden = false;
       if ($('cta'))     $('cta').classList.add('on');
-      try { localStorage.setItem(MEMORIA, '1'); } catch (e) {}
+      guardar(K_OK, '1');
     } catch (e) {}
   }
 
-  var yaVisto = false;
-  try { yaVisto = localStorage.getItem(MEMORIA) === '1'; } catch (e) {}
-  if (yaVisto) { abrir(); }
+  var listo = leer(K_OK) === '1';
+  if (listo) { abrir(); }
+
+  var visto = parseFloat(leer(K_VISTO) || '0');
+  if (!isFinite(visto) || visto < 0) { visto = 0; }
 
   try {
     if (window.Vimeo && $('vid')) {
       var player = new Vimeo.Player($('vid'));
-      var listo = yaVisto;
+      var previo = null;
+      var ultimoGuardado = 0;
+
+      player.on('seeked', function (d) {
+        try { previo = d.seconds; } catch (e) {}   /* un salto no acredita nada */
+      });
+
       player.on('timeupdate', function (d) {
         try {
           if (listo) return;
-          var p = Math.min(d.percent || 0, 1);
+          var ahora = d.seconds, dur = d.duration || 0;
+          if (previo !== null) {
+            var delta = ahora - previo;
+            if (delta > 0 && delta <= SALTO) { visto += delta; }
+          }
+          previo = ahora;
+
+          if (visto - ultimoGuardado > 5) {
+            guardar(K_VISTO, visto.toFixed(1));
+            ultimoGuardado = visto;
+          }
+
+          if (!dur) return;
+          var p = Math.min(visto / dur, 1);
           var hacia = Math.min(p / UMBRAL, 1);
           if ($('fill')) $('fill').style.width = (hacia * 100).toFixed(1) + '%';
-          if ($('pct'))  $('pct').textContent = 'Llevas ' + Math.round(p * 100) + '% de la clase';
-          if (p >= UMBRAL) { listo = true; abrir(); }
+          if ($('pct'))  $('pct').textContent = 'Has visto ' + Math.round(p * 100) + '% de la clase';
+          if (p >= UMBRAL) { listo = true; guardar(K_VISTO, visto.toFixed(1)); abrir(); }
         } catch (e) {}
       });
     }
