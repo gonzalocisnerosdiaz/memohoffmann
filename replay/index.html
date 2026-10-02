@@ -8,8 +8,8 @@
 <!--
 ====================================================================
   PÁGINA DE REPETICIÓN · MEMO HOFFMANN
-  Clase del 1 de octubre de 2026. La repetición vive 72 horas:
-  cierra el domingo 4 de octubre a las 7 PM CDMX.
+  Clase del 1 de octubre de 2026. La repetición abre el viernes 2 a
+  las 7 PM CDMX y vive 72 horas: cierra el lunes 5 a las 7 PM CDMX.
 
   TRES PIEZAS:
    1. Cuenta regresiva a la expiración. Al llegar a cero el video
@@ -192,11 +192,11 @@ footer{border-top:1px solid var(--line);padding:clamp(26px,4.5vw,40px) 0}
 (function () {
   'use strict';
 
-  /* 72 horas exactas despues de la clase: la clase fue el 1 de octubre
-     a las 7 PM CDMX, asi que cierra el domingo 4 a las 7 PM CDMX.
+  /* 72 horas contadas desde el viernes 2 de octubre a las 7 PM CDMX,
+     que es cuando se abre la repeticion. Cierra el LUNES 5 a las 7 PM.
      Mexico es UTC-6 todo el año, no aplica horario de verano desde
      2022. NO cambiar a -05:00. */
-  var CIERRA  = new Date('2026-10-04T19:00:00-06:00').getTime();
+  var CIERRA  = new Date('2026-10-05T19:00:00-06:00').getTime();
 
   var $ = function (id) { return document.getElementById(id); };
 
