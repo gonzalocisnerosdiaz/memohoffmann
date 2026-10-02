@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Repetición · Clase de Performance Marketing | Memo Hoffmann</title>
+<!--
+====================================================================
+  PÁGINA DE REPETICIÓN · MEMO HOFFMANN
+  Clase del 1 de octubre de 2026. La repetición vive 48 horas.
+
+  TRES PIEZAS:
+   1. Cuenta regresiva a la expiración. Al llegar a cero el video
+      se oculta y aparece el aviso de cerrado.
+   2. Video de Vimeo, 16:9. OJO: el codigo que da el boton de
+      compartir de Vimeo venia con padding 75% (4:3). El oEmbed
+      confirma 1280x720, o sea 56.25%. Mismo error que traian los
+      tres embeds de Loom. Verificar SIEMPRE contra el oEmbed.
+   3. El CTA se abre al 60% de la clase vista, que es justo donde
+      arranca la parte de como entrar.
+
+  !! LA EXPIRACION ES DE RELOJ DEL NAVEGADOR, NO ES UN CANDADO.
+     Quien cambie la hora de su maquina ve el video igual. Sirve
+     como urgencia honesta, no como seguridad. Si hace falta cerrar
+     de verdad: borrar esta carpeta del repo, o poner el video en
+     Vimeo con privacidad por dominio.
+
+  !! EL CONTENIDO ES VISIBLE POR DEFECTO. Si el script truena, se
+     ve el video y se ve el CTA. Nada queda en blanco. Es la leccion
+     de la pagina de confirmacion de GHL.
+
+  El CTA recuerda en localStorage que ya se desbloqueo, para que
+  recargar no castigue a quien ya vio la clase.
+====================================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Inter:wght@400;500;600;650&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#070A12; --panel:#0D1220;
+  --blue:#4D8DFF; --blue-dark:#1D5FD8; --blue-soft:#A8C7FF;
+  --amber:#E0A93B; --amber-soft:#F2CE85;
+  --text:#fff; --text-2:#BAC4D6; --text-3:#8A95AB;
+  --line:rgba(255,255,255,.10); --line-blue:rgba(77,141,255,.28);
+  --line-amber:rgba(224,169,59,.30);
+  --pad:clamp(20px,5vw,56px);
+}
+html{background:var(--ink);-webkit-text-size-adjust:100%}
+body{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--ink);color:var(--text);font-size:16px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:"Plus Jakarta Sans",sans-serif;font-weight:800;letter-spacing:-.03em;line-height:1.14}
+b,strong{font-weight:650}
+.glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(900px 520px at 50% 0,rgba(77,141,255,.15),transparent 60%)}
+main{position:relative;z-index:1}
+.wrap{width:100%;max-width:940px;margin:0 auto;padding:0 var(--pad)}
+
+/* ── barra de expiración ── */
+.bar{position:sticky;top:0;z-index:50;background:rgba(7,10,18,.94);
+  backdrop-filter:blur(12px);border-bottom:1px solid var(--line-amber)}
+.bar .wrap{display:flex;align-items:center;justify-content:center;gap:clamp(10px,2.4vw,20px);
+  flex-wrap:wrap;padding-top:11px;padding-bottom:11px}
+.bar .lbl{font-size:clamp(11.5px,2.1vw,13px);color:var(--amber-soft);font-weight:600;
+  text-transform:uppercase;letter-spacing:.08em}
+.cd{display:flex;gap:7px}
+.cd div{min-width:50px;text-align:center;padding:5px 8px;border-radius:9px;
+  background:rgba(224,169,59,.08);border:1px solid var(--line-amber)}
+.cd b{display:block;font-family:"Plus Jakarta Sans";font-weight:800;font-size:16px;
+  color:var(--amber-soft);line-height:1.15;font-variant-numeric:tabular-nums}
+.cd span{font-size:8.5px;color:var(--text-3);text-transform:uppercase;letter-spacing:.09em}
+
+/* ── encabezado ── */
+.top{padding:clamp(28px,5vw,52px) 0 clamp(18px,3vw,26px);text-align:center}
+.eyebrow{display:inline-block;padding:7px 15px;border-radius:999px;
+  background:rgba(77,141,255,.10);border:1px solid var(--line-blue);
+  color:var(--blue-soft);font-size:clamp(10.5px,2vw,12px);font-weight:600;
+  text-transform:uppercase;letter-spacing:.09em}
+h1{margin:14px 0 0;font-size:clamp(24px,4.2vw,40px);text-wrap:balance}
+.lede{margin:13px auto 0;max-width:60ch;font-size:clamp(15px,2.2vw,17.5px);color:var(--text-2)}
+
+/* ── video ── */
+.player{margin:clamp(20px,3.5vw,30px) auto 0;border-radius:16px;overflow:hidden;
+  border:1px solid var(--line-blue);background:#000;
+  box-shadow:0 24px 70px rgba(0,0,0,.6)}
+.ratio{position:relative;height:0;padding-bottom:56.25%}
+.ratio iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+
+/* ── CTA: bloqueado y abierto ── */
+.cta{margin:clamp(24px,4vw,40px) auto clamp(40px,7vw,80px);padding:clamp(22px,3.6vw,34px);
+  border-radius:20px;background:var(--panel);border:1px solid var(--line);text-align:center}
+.cta.on{border-color:var(--line-blue);
+  background:radial-gradient(520px 260px at 50% 0,rgba(77,141,255,.14),transparent 70%),var(--panel)}
+.cta h2{font-size:clamp(20px,3.1vw,28px);text-wrap:balance}
+.cta h2 em{font-style:normal;color:var(--blue)}
+.cta p{margin-top:12px;font-size:clamp(14.5px,2.2vw,16.5px);color:var(--text-2);
+  max-width:56ch;margin-left:auto;margin-right:auto}
+.prog{width:min(420px,88%);height:8px;margin:20px auto 0;border-radius:99px;
+  background:rgba(255,255,255,.08);overflow:hidden}
+.prog i{display:block;height:100%;width:0;border-radius:99px;
+  background:linear-gradient(90deg,var(--blue),var(--amber));transition:width .4s ease}
+.pct{margin-top:9px;font-size:12.5px;color:var(--text-3);font-variant-numeric:tabular-nums}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;margin-top:20px;
+  min-height:54px;padding:15px clamp(26px,4vw,42px);border-radius:999px;text-decoration:none;
+  font-family:"Plus Jakarta Sans";font-weight:700;font-size:clamp(15px,2.3vw,17px);color:#fff;
+  background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+  box-shadow:0 8px 28px rgba(77,141,255,.34);
+  transition:transform .2s ease,box-shadow .2s ease}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 40px rgba(77,141,255,.48)}
+.small{margin-top:13px;font-size:13px;color:var(--text-3)}
+[hidden]{display:none!important}
+
+/* ── expirada ── */
+.gone{text-align:center;padding:clamp(50px,9vw,100px) 0}
+.gone h2{font-size:clamp(24px,4vw,38px)}
+.gone p{margin:15px auto 0;max-width:54ch;font-size:clamp(15px,2.2vw,17.5px);color:var(--text-2)}
+
+footer{border-top:1px solid var(--line);padding:clamp(26px,4.5vw,40px) 0}
+.disc{font-size:12px;color:var(--text-3);line-height:1.7;max-width:76ch;margin:0 auto;text-align:center}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<main>
+
+  <div class="bar" id="barra">
+    <div class="wrap">
+      <span class="lbl">La repetición se cierra en</span>
+      <div class="cd">
+        <div><b id="h">--</b><span>Horas</span></div>
+        <div><b id="m">--</b><span>Min</span></div>
+        <div><b id="s">--</b><span>Seg</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="vivo">
+    <div class="wrap">
+      <div class="top">
+        <span class="eyebrow">Repetición &middot; 48 horas</span>
+        <h1>La clase completa de Performance Marketing</h1>
+        <p class="lede">La misma que dimos en vivo el 1 de octubre, sin cortes. Dura cerca de dos horas.</p>
+      </div>
+
+      <div class="player">
+        <div class="ratio">
+          <iframe id="vid"
+            src="https://player.vimeo.com/video/1232448303?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+            title="Clase de Performance Marketing"
+            allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="cta" id="cta">
+        <div id="cerrado">
+          <h2>El siguiente paso <em>aparece más adelante</em></h2>
+          <p>En la clase explico cómo se entra y a quién aceptamos. El link se abre solo cuando llegas a esa parte.</p>
+          <div class="prog"><i id="fill"></i></div>
+          <p class="pct" id="pct">Llevas 0% de la clase</p>
+        </div>
+
+        <div id="abierto" hidden>
+          <h2>Ya llegaste a la parte <em>de cómo entrar</em></h2>
+          <p>Si quieres que veamos tu caso, llena la aplicación. Son unas preguntas y toma unos minutos. La leo yo.</p>
+          <a class="btn" href="https://api.leadconnectorhq.com/widget/bookings/aplicacion-pm">Llenar mi aplicación</a>
+          <p class="small">Si tiene sentido, te agendamos una llamada.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="gone" id="expirada" hidden>
+    <div class="wrap">
+      <h2>La repetición ya se cerró</h2>
+      <p>Estuvo arriba 48 horas, como dijimos que iba a estar. Si alcanzaste a verla y quieres que veamos tu caso, la aplicación sigue abierta.</p>
+      <a class="btn" href="https://api.leadconnectorhq.com/widget/bookings/aplicacion-pm">Llenar mi aplicación</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <p class="disc">Los resultados mencionados son de personas específicas y no representan una promesa ni una garantía de resultado. Lo que cada persona obtenga depende de su trabajo, su constancia y su situación. Esta página no está afiliada ni respaldada por Meta, Instagram ni TikTok.</p>
+    </div>
+  </footer>
+
+</main>
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+<script>
+/* ──────────────────────────────────────────────────────────────
+   Dos cosas, las dos envueltas en try/catch: si cualquiera truena,
+   la pagina queda con el video visible y el CTA visible. Nunca en
+   blanco.
+   ────────────────────────────────────────────────────────────── */
+(function () {
+  'use strict';
+
+  /* El evento fue el 1 de octubre 2026, 7 PM CDMX. CDMX es UTC-6 todo
+     el año: Mexico no aplica horario de verano desde 2022. 48 horas. */
+  var CIERRA   = new Date('2026-10-03T19:00:00-06:00').getTime();
+  var UMBRAL   = 0.60;              /* el CTA se abre al 60% de la clase */
+  var MEMORIA  = 'memo_replay_ok';  /* para que recargar no castigue */
+
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ── 1. Cuenta regresiva y expiración ── */
+  function reloj() {
+    try {
+      var falta = CIERRA - Date.now();
+      if (falta <= 0) {
+        if ($('vivo'))    $('vivo').hidden = true;
+        if ($('barra'))   $('barra').hidden = true;
+        if ($('expirada')) $('expirada').hidden = false;
+        return false;
+      }
+      var h = Math.floor(falta / 36e5),
+          m = Math.floor(falta % 36e5 / 6e4),
+          s = Math.floor(falta % 6e4 / 1e3);
+      var dd = function (n) { return n < 10 ? '0' + n : '' + n; };
+      if ($('h')) $('h').textContent = dd(h);
+      if ($('m')) $('m').textContent = dd(m);
+      if ($('s')) $('s').textContent = dd(s);
+      return true;
+    } catch (e) { return false; }
+  }
+  if (reloj()) { setInterval(reloj, 1000); }
+
+  /* ── 2. Desbloqueo por avance del video ── */
+  function abrir() {
+    try {
+      if ($('cerrado')) $('cerrado').hidden = true;
+      if ($('abierto')) $('abierto').hidden = false;
+      if ($('cta'))     $('cta').classList.add('on');
+      try { localStorage.setItem(MEMORIA, '1'); } catch (e) {}
+    } catch (e) {}
+  }
+
+  var yaVisto = false;
+  try { yaVisto = localStorage.getItem(MEMORIA) === '1'; } catch (e) {}
+  if (yaVisto) { abrir(); }
+
+  try {
+    if (window.Vimeo && $('vid')) {
+      var player = new Vimeo.Player($('vid'));
+      var listo = yaVisto;
+      player.on('timeupdate', function (d) {
+        try {
+          if (listo) return;
+          var p = Math.min(d.percent || 0, 1);
+          var hacia = Math.min(p / UMBRAL, 1);
+          if ($('fill')) $('fill').style.width = (hacia * 100).toFixed(1) + '%';
+          if ($('pct'))  $('pct').textContent = 'Llevas ' + Math.round(p * 100) + '% de la clase';
+          if (p >= UMBRAL) { listo = true; abrir(); }
+        } catch (e) {}
+      });
+    }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>
