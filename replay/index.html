@@ -8,7 +8,8 @@
 <!--
 ====================================================================
   PÁGINA DE REPETICIÓN · MEMO HOFFMANN
-  Clase del 1 de octubre de 2026. Cierra el domingo 4 a las 6 PM CDMX.
+  Clase del 1 de octubre de 2026. La repetición vive 72 horas:
+  cierra el domingo 4 de octubre a las 7 PM CDMX.
 
   TRES PIEZAS:
    1. Cuenta regresiva a la expiración. Al llegar a cero el video
@@ -145,7 +146,7 @@ footer{border-top:1px solid var(--line);padding:clamp(26px,4.5vw,40px) 0}
   <section id="vivo">
     <div class="wrap">
       <div class="top">
-        <span class="eyebrow">Repetición &middot; se cierra el domingo</span>
+        <span class="eyebrow">Repetición &middot; 72 horas</span>
         <h1>La clase completa de Performance Marketing</h1>
         <p class="lede">La misma que dimos en vivo el 1 de octubre.</p>
       </div>
@@ -181,7 +182,7 @@ footer{border-top:1px solid var(--line);padding:clamp(26px,4.5vw,40px) 0}
   <section class="gone" id="expirada" hidden>
     <div class="wrap">
       <h2>La repetición ya se cerró</h2>
-      <p>Estuvo arriba hasta el domingo, como dijimos que iba a estar. Si alcanzaste a verla y quieres que veamos tu caso, la aplicación sigue abierta.</p>
+      <p>Estuvo arriba 72 horas, como dijimos que iba a estar. Si alcanzaste a verla y quieres que veamos tu caso, la aplicación sigue abierta.</p>
       <a class="btn" href="https://api.leadconnectorhq.com/widget/bookings/aplicacion-pm">Agenda tu llamada</a>
     </div>
   </section>
@@ -203,9 +204,11 @@ footer{border-top:1px solid var(--line);padding:clamp(26px,4.5vw,40px) 0}
 (function () {
   'use strict';
 
-  /* Cierra el domingo 4 de octubre, 6 PM CDMX. Mexico es UTC-6 todo el
-     año: no aplica horario de verano desde 2022. NO cambiar a -05:00. */
-  var CIERRA  = new Date('2026-10-04T18:00:00-06:00').getTime();
+  /* 72 horas exactas despues de la clase: la clase fue el 1 de octubre
+     a las 7 PM CDMX, asi que cierra el domingo 4 a las 7 PM CDMX.
+     Mexico es UTC-6 todo el año, no aplica horario de verano desde
+     2022. NO cambiar a -05:00. */
+  var CIERRA  = new Date('2026-10-04T19:00:00-06:00').getTime();
   var UMBRAL  = 0.60;             /* fraccion de la clase que hay que ver */
   var SALTO   = 2;                /* segundos: mas que esto es un salto, no reproduccion */
   var K_VISTO = 'memo_replay_visto';
